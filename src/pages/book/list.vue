@@ -18,10 +18,6 @@
                         label="书籍名称">
                     </el-table-column>
                     <el-table-column
-                        prop="learners"
-                        label="学习人数">
-                    </el-table-column>
-                    <el-table-column
                         prop="author"
                         label="作者">
                     </el-table-column>
@@ -38,15 +34,14 @@
                         label="ISBN">
                     </el-table-column>
                     <el-table-column
-                        prop="allowSpread"
+                        prop="allowSpread" 
                         label="是否可以传播">
                     </el-table-column>
                     <el-table-column
-                        prop="allowSpread"
                         label="操作">
                         <template scope="scope">
                             <el-button @click="remove" type="text" size="small">下架</el-button>
-                            <el-button type="text" size="small">详情</el-button>
+                            <el-button @click="detail" type="text" size="small">详情</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -68,8 +63,24 @@
         components: {
             navMenu
         },
+        created (){
+            this.list();
+        },
         methods: {
+            list (){
+                stream.get('/book/list').then(({ data }) => {
+                    data.rows.forEach( book => {
+                        //是否允许分享
+                        book.allowSpread = book.allowSpread ? '是' : '否';
+                        //框架
+                        book.framework = book.framework || '无';
+                    });
+                    this.tableData = data.rows;
+                });
+            },
             remove (){
+            },
+            detail (){
             }
         }
     }

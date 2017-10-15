@@ -142,3 +142,11 @@ input[type=button] {width: auto; overflow: visible;}
 
 /* let's clear some floats */
 .clearfix:after { content: " "; display: block; clear: both; }
+
+[class^="el-icon-my"], [class*=" el-icon-my"] {
+	font-family:"elico" !important;
+	font-size:16px;
+	font-style:normal;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}		

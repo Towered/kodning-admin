@@ -17,30 +17,37 @@
                         <el-input v-model="form.translator"></el-input>
                     </el-form-item>
                     <el-form-item label="语言">
-                       <el-select v-model="form.lang" multiple filterable remote placeholder="请输入语言"
-                            :remote-method="getLang" :loading="loading">
+                        <el-select v-model="form.lang" 
+                            filterable remote  
+                            placeholder="请选择语言"
+                            :loading="loading"
+                            :remote-method="getLangList">
                             <el-option
                                 v-for="lang in langs"
-                                :key="lang.value"
-                                :label="lang.label"
-                                :value="lang.value">
+                                :key="lang.name"
+                                :label="lang.name"
+                                :value="lang.lid">
                             </el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="框架">
-                        <el-select v-model="form.framework" multiple filterable remote placeholder="请输入框架"
-                            :remote-method="getFramework" :loading="loading">
+                        <el-select v-model="form.framework" 
+                            filterable remote 
+                            placeholder="请选择框架"
+                            :loading="loading"
+                            :remote-method="getFrameworkList">
                             <el-option
                                 v-for="framework in frameworks"
-                                :key="framework.value"
-                                :label="framework.label"
-                                :value="framework.value">
+                                :key="framework.name"
+                                :label="framework.name"
+                                :value="framework.fid">
                             </el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="出版社">
                         <el-select v-model="form.press"
-                            multiple filterable remote placeholder="请输入出版社"
+                            multiple filterable remote 
+                            placeholder="请选择出版社"
                             :remote-method="getPress" :loading="loading">
                             <el-option
                                 v-for="press in presses"
@@ -72,6 +79,7 @@
     </section>
 </template>
 <script>
+    import Vue from 'vue';
     import navMenu from 'com/nav-menu';
     import stream from 'util/stream';
 
@@ -79,8 +87,9 @@
         name: 'books-add',
         data (){
             return {
-                presses: [],    //出版社
-                frameworks: [], //框架
+                presses: [],    //出版社列表
+                langs: [],      //语言列表
+                frameworks: [], //框架列表
                 loading: false,
                 form:{
                     name: '',   //书籍名
@@ -99,16 +108,34 @@
             navMenu
         },
         methods: {
-            getLang (){
-            },
             getPress (){
             },
             getFramework (){
             },
             onSubmit (){
-                stream.form('/books/add', this.form).then( data => {
-                    console.log( data );
-                }).catch( e => {
+                console.log( this.form );
+                // stream.send('/books/add', this.form).then( data => {
+                //     console.log( data );
+                // }).catch( e => {
+                // });
+            },
+            getLangList ( qs ){
+                stream.get('/lang/list', {
+                    key: qs
+                }).then(({ data }) => {
+                    this.langs = data.rows.map( item => {
+                        return item;
+                    });
+                });
+            },
+            getFrameworkList ( qs ){
+                stream.get('/framework/list', {
+                    lid: this.form.lang,
+                    key: qs
+                }).then(({ data }) => {
+                    this.frameworks = data.rows.map( item => {
+                        return item;
+                    });
                 });
             }
         }
